@@ -175,3 +175,6 @@ index1.html
 .env
 /catalog/templates/skystore-templates-master.zip
 /catalog/templates/skystore-templates-master
+django
+requirements-old.txt
+requirements-old2.txt
