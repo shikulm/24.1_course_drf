@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 copy . .
 
 # Команда для запуска приложения при старте контейнера
-CMD ["python", "app.py"]
+#CMD ["python", "manage.py", "runserver"]
 
 #systemctl start docker
 
