@@ -20,6 +20,29 @@
 - превью (картинка),
 - ссылка на видео.
 
+<h3> Для использования Docker compose выполните следующие действия: </h3>
+
+- Запустите службу docker (в терминале для Ubuntu можно выполнить команду): 
+
+> sudo service docker start
+
+- Собрать Docker-образ
+
+> docker-compose build
+
+- Поднять Docker-образ
+
+> docker-compose up
+ 
+- При необходимости создать БД
+
+> docker-compose exec db psql -U postgres
+> 
+> create database course_drf
+> 
+> \q
+
+
 <h3> Для использования Docker выполните следующие действия: </h3>
 
 - Запустите службу docker (в терминале для Ubuntu можно выполнить команду): 
@@ -35,6 +58,7 @@
 
 > docker run course_drf 
  
+
 <h3> Перед выполнением проекта в Ubuntu выполните команды </h3>
 
 > sudo service postgresql start

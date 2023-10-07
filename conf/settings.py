@@ -97,17 +97,27 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'course_drf',
+#         'USER': get_env_value('PG_USER'),
+#         'PASSWORD': get_env_value('PASSWORD'),
+#         'HOST': get_env_value('HOST'),
+#         'PORT': get_env_value('PORT'),
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'course_drf',
         'USER': get_env_value('PG_USER'),
         'PASSWORD': get_env_value('PASSWORD'),
-        'HOST': get_env_value('HOST'),
-        'PORT': get_env_value('PORT'),
+        'HOST': 'db',
+        # 'PORT': get_env_value('PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -191,10 +201,13 @@ STRIPE_API_KEY = get_env_value('STRIPE_API_KEY')
 
 # URL-адрес брокера сообщений
 # CELERY_BROKER_URL = 'redis://localhost:6379' # Например, Redis, который по умолчанию работает на порту 6379
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # Например, Redis, который по умолчанию работает на порту 6379
+# CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # Например, Redis, который по умолчанию работает на порту 6379
+CELERY_BROKER_URL = 'redis://redis:6379/0' # Например, Redis, который по умолчанию работает на порту 6379
 # URL-адрес брокера результатов, также Redis
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+# CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
 # # Часовой пояс для работы Celery
 # CELERY_TIMEZONE = "Australia/Tasmania"
 # # Флаг отслеживания выполнения задач
