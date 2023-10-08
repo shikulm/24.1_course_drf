@@ -1,19 +1,19 @@
-version: '3'
+version: '3.10'
 
 services:
   db:
     image: postgres
     restart: always
+    env_file:
+      - docker.env
     environment:
-      - POSTGRES_PASSWORD=mysecretpassword
-#      - POSTGRES_PASSWORD='12345'
-      - POSTGRES_DB="course_drf"
       - PGDATA=/var/lib/postgresql/data/pgdata
 #      - .env
     volumes:
       - pg_data:/var/lib/postgresql/data/pgdata
     ports:
       - '5432:5432'
+    container_name: postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -22,36 +22,63 @@ services:
       
   redis:
     image: redis:latest
+    restart: always
     ports:
       - '6379:6379'
+    container_name: redis
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - .data.cache:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 
   app:
     build: .
-#    command: python manage.py migrate --database course_drf && python manage.py runserver 0.0.0.0:8000
-    tty: true
-    command: /bin/bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
       - '8001:8000'
+    container_name: courses
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+      - redis
+
+    tty: true
+    command: /bin/bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
 
   celery:
     build: .
-    tty: true
-    command: /bin/bash -c "celery -A conf worker -l INFO"
     depends_on:
       - app
       - redis
+    container_name: celery
+    volumes:
+      - .:/app
+    tty: true
+    command: bash -c "celery -A conf worker -l INFO"
+    healthcheck:
+      #      test: [ "CMD", "executable" ]
+      #      test: ["NONE"]
+      test: [ "CMD-SHELL", "celery inspect ping --destination celery@$$HOSTNAME" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
 
   celery_beat:
     build: .
     restart: always
+    container_name: celery_beat
+    volumes:
+      - .:/app
     tty: true
-    command: /bin/bash -c "celery -A conf beat -l INFO -S django"
+    command: bash -c "sleep 30 && celery -A conf beat -l INFO -S django"
     depends_on:
       - app
       - redis

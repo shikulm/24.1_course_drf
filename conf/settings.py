@@ -17,7 +17,6 @@ from dotenv.main import load_dotenv
 
 def get_env_value(env_var):
     try:
-
         return os.environ[env_var]
     except:
         error_msg = f"Set he {env_var} variable in .env file"
