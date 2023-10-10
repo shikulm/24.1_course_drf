@@ -60,6 +60,7 @@ services:
     build: .
     depends_on:
       app:
+#        condition: service_started
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -86,6 +87,7 @@ services:
       - .:/app
     depends_on:
       app:
+#        condition: service_started
         condition: service_healthy
       redis:
         condition: service_healthy
